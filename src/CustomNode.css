@@ -1,0 +1,16 @@
+.text-updater-node {
+  height: 50px;
+  border: 1px solid #eee;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.text-updater-node input {
+  font-size: 12px;
+  text-align: center;
+  background-color: white;
+  border: none;
+  color: black;
+}
