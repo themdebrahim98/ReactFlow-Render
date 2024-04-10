@@ -1,9 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import "./App.css";
 import ReactFlow, {
-  addEdge,
-  applyNodeChanges,
-  applyEdgeChanges,
   ReactFlowProvider,
   useNodesState,
   useEdgesState,
@@ -13,12 +10,7 @@ import CustomEdge from "./CustomEdge.jsx";
 import "reactflow/dist/style.css";
 import { v4 as uuidv4 } from "uuid";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  addBranch,
-  addNode,
-  removeBranch,
-  removeNode,
-} from "./features/node/nodeSlice.js";
+import { addBranch, addNode } from "./features/node/nodeSlice.js";
 
 const nodeTypes = { customNode: CustomNode };
 const edgeTypes = {
@@ -29,21 +21,15 @@ function App() {
   const graph = useSelector((state) => state.graph);
   const dispatch = useDispatch();
   const [nodes, setNodes, onNodesChange] = useNodesState(graph.nodes);
-  const [edges, setEdges] = useState(graph.branches);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(graph.branches);
   const [randomNodePosition, setRandomNodePosition] = useState({
     x: 10,
     y: 50,
   });
   let uid = uuidv4();
 
-  const onEdgesChange = (changes) => {
-    setEdges((eds) => applyEdgeChanges(changes, eds));
-    dispatch(removeBranch(changes));
-  };
-
-  const handleConnect = (params) => {
-    dispatch(addBranch(params));
-    setEdges((eds) => addEdge(params, eds));
+  const handleConnect = (connection) => {
+    dispatch(addBranch(connection));
   };
 
   const handleAddNode = () => {
@@ -52,26 +38,24 @@ function App() {
       type: "customNode",
       data: {
         label: "New node",
-        deleteNodeById: (id) => {
-          dispatch(removeNode(id));
-          setNodes((nds) => nds.filter((node) => node.id !== id));
-        },
       },
       position: { x: randomNodePosition.x, y: randomNodePosition.y },
       style: { backgroundColor: "#6ede87", color: "white" },
     };
-
     dispatch(addNode(newNode));
-    setNodes((prevNodes) => {
-      const updatedNodes = [...prevNodes, newNode];
-      return updatedNodes;
-    });
-
     setRandomNodePosition((prevPosition) => ({
       x: prevPosition.x,
       y: prevPosition.y + 5,
     }));
   };
+
+  useEffect(() => {
+    setNodes(graph.nodes);
+  }, [graph.nodes, nodes.length]);
+
+  useEffect(() => {
+    setEdges(graph.branches);
+  }, [graph.branches, graph.branches.length]);
 
   return (
     <div className="container">

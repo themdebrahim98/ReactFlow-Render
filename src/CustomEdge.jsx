@@ -6,8 +6,11 @@ import {
 } from "reactflow";
 import "./CustomNode.css";
 import { IoMdClose } from "react-icons/io";
+import { useSelector, useDispatch } from "react-redux";
+import { removeBranch } from "./features/node/nodeSlice";
 
 export default function CustomEdge({ id, sourceX, sourceY, targetX, targetY }) {
+  const dispatch = useDispatch();
   const { setEdges } = useReactFlow();
   const [edgePath, labelX, labelY] = getStraightPath({
     sourceX,
@@ -15,6 +18,10 @@ export default function CustomEdge({ id, sourceX, sourceY, targetX, targetY }) {
     targetX,
     targetY,
   });
+
+  const deleteEdgeById = (id) => {
+    dispatch(removeBranch(id));
+  };
 
   return (
     <>
@@ -36,10 +43,8 @@ export default function CustomEdge({ id, sourceX, sourceY, targetX, targetY }) {
           }}
           className="nodrag nopan"
           onClick={() => {
-            setEdges((es) => {
-              console.log(es);
-              return es.filter((e) => e.id !== id);
-            });
+            console.log(id);
+            deleteEdgeById(id);
           }}
         >
           <IoMdClose />

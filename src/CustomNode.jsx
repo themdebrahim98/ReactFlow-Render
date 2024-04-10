@@ -1,8 +1,22 @@
 import { memo } from "react";
-import { Handle, Position, NodeToolbar, useNodes } from "reactflow";
+import {
+  Handle,
+  Position,
+  NodeToolbar,
+  useNodes,
+  useReactFlow,
+  useEdges,
+} from "reactflow";
 import { IoMdClose } from "react-icons/io";
+import { useSelector, useDispatch } from "react-redux";
+import { removeNode } from "./features/node/nodeSlice";
 
 const CustomNode = ({ data, id }) => {
+  const dispatch = useDispatch();
+
+  const deleteNodeById = (id) => {
+    dispatch(removeNode(id));
+  };
   return (
     <div className="text-updater-node">
       <NodeToolbar
@@ -23,13 +37,12 @@ const CustomNode = ({ data, id }) => {
             alignItems: "center",
             cursor: "pointer",
           }}
-          onClick={() => data.deleteNodeById(id)}
+          onClick={() => deleteNodeById(id)}
         >
           <IoMdClose />
         </div>
       </NodeToolbar>
       <div>
-        {/* <label htmlFor="text">Text:</label> */}
         <input
           id="text"
           name="text"
@@ -38,7 +51,6 @@ const CustomNode = ({ data, id }) => {
           style={{ textAlign: "center" }}
         />
       </div>
-      {/* <div style={{ padding: "10px 20px" }}>{data.label}</div> */}
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Bottom} />
     </div>
