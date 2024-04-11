@@ -43,15 +43,13 @@ function App() {
       style: { backgroundColor: "#6ede87", color: "white" },
     };
     dispatch(addNode(newNode));
+    setNodes((prev) => [...prev, newNode]);
+
     setRandomNodePosition((prevPosition) => ({
       x: prevPosition.x,
       y: prevPosition.y + 5,
     }));
   };
-
-  useEffect(() => {
-    setNodes(graph.nodes);
-  }, [graph.nodes, nodes.length]);
 
   useEffect(() => {
     setEdges(graph.branches);
@@ -82,9 +80,7 @@ function App() {
               edgeTypes={edgeTypes}
               defaultEdgeOptions={{
                 type: "custom-edge",
-                animated: true,
               }}
-              fitView={true}
             />
           </ReactFlowProvider>
         </div>

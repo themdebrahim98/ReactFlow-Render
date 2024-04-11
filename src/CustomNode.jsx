@@ -13,9 +13,12 @@ import { removeNode } from "./features/node/nodeSlice";
 
 const CustomNode = ({ data, id }) => {
   const dispatch = useDispatch();
+  const { setNodes } = useReactFlow();
+  const nodes = useNodes();
 
   const deleteNodeById = (id) => {
     dispatch(removeNode(id));
+    setNodes((nds) => nds.filter((nd) => nd.id != id));
   };
   return (
     <div className="text-updater-node">
